@@ -3,6 +3,7 @@
 #include "logging.h"
 #include <QDateTime>
 #include <QAtomicInt>
+#include <QMutex>
 
 MessageType MessageQueueWriter::generate(quint64 threadId, int& priority)
 {
@@ -19,7 +20,6 @@ MessageType MessageQueueWriter::generate(quint64 threadId, int& priority)
 MessageQueueWriter::MessageQueueWriter(IMessageQueue& queue)
     : mQueue(queue)
     , mLwmOrStopped()
-    , mMutex()
 {
     LOG;
     queue.set_events(*this);
@@ -33,6 +33,8 @@ MessageQueueWriter::~MessageQueueWriter()
 void MessageQueueWriter::run()
 {
     LOG;
+    QMutex mutex;
+
     qsrand(QTime::currentTime().msecsSinceStartOfDay());
 
     const quint64 threadId = (quint64)QThread::currentThreadId();
@@ -43,8 +45,12 @@ void MessageQueueWriter::run()
         switch (result) {
         case HWM:
         case NO_SPACE:
-            this->mLwmOrStopped.wait(&this->mMutex);
+        {
+            QMutexLocker locker(&mutex);
+            Q_UNUSED(locker);
+            this->mLwmOrStopped.wait(&mutex);
             break;
+        }
         default:
             break;
         }

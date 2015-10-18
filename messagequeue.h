@@ -16,7 +16,7 @@ class IMessageQueueEvents;
 class MessageQueue : public IMessageQueue
 {
 public:
-    explicit MessageQueue(int queue_size, int lwm, int hwm);
+    explicit MessageQueue(size_t queue_size, size_t lwm, size_t hwm);
     virtual ~MessageQueue();
 
     RetCodes put(const MessageType& message, int priority);
@@ -34,9 +34,9 @@ private:
     void setIsFull(bool);
     void updateQueueState();
 
-    const int mQueueSize;
-    const int mQueueLwm;
-    const int mQueueHwm;
+    const size_t mQueueSize;
+    const size_t mQueueLwm;
+    const size_t mQueueHwm;
     bool mIsStopped;
     bool mIsHwm;
     bool mIsLwm;

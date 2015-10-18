@@ -3,7 +3,6 @@
 
 #include <QRunnable>
 #include <QWaitCondition>
-#include <QMutex>
 #include "imessagequeueevents.h"
 #include "messagetype.h"
 
@@ -27,7 +26,6 @@ private:
 
     IMessageQueue& mQueue;
     QWaitCondition mLwmOrStopped;
-    QMutex mMutex;
 };
 
 #endif // MESSAGEQUEUEWRITER_H

@@ -3,7 +3,7 @@
 #include "logging.h"
 #include <QMutexLocker>
 
-MessageQueue::MessageQueue(int queue_size, int lwm, int hwm)
+MessageQueue::MessageQueue(size_t queue_size, size_t lwm, size_t hwm)
     : mQueueSize(queue_size)
     , mQueueLwm(lwm)
     , mQueueHwm(hwm)
@@ -147,7 +147,7 @@ void MessageQueue::setIsFull(bool value)
 
 void MessageQueue::updateQueueState()
 {
-    const int size = this->mQueue.size();
+    const size_t size = this->mQueue.size();
     this->setIsFull(size >= this->mQueueSize);
     this->setIsHwm(size >= this->mQueueHwm);
     this->setIsLwm(size <= this->mQueueLwm);
