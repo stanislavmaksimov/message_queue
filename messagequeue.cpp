@@ -39,7 +39,7 @@ RetCodes MessageQueue::put(const MessageType& message, int priority)
         return NO_SPACE;
     }
 
-    this->mQueue.push(MessageTypeItem(message, priority));
+    this->mQueue.push(MessageTypeQueueItem(message, priority));
 
     this->updateQueueState();
     if (this->mIsHwm) {
@@ -61,7 +61,7 @@ RetCodes MessageQueue::get(MessageType& message)
         return STOPPED;
     }
 
-    const MessageTypeItem item = this->mQueue.top();
+    const MessageTypeQueueItem item = this->mQueue.top();
     this->mQueue.pop();
     message = item.message;
 

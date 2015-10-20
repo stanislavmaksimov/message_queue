@@ -1,6 +1,8 @@
 #include <QCoreApplication>
 #include <QThreadPool>
 #include <iostream>
+#include <thread>
+#include <memory>
 #include "messagequeue.h"
 #include "messagequeuereader.h"
 #include "messagequeuewriter.h"
@@ -11,17 +13,23 @@ int main(int argc, char *argv[])
 
     QThreadPool::globalInstance()->setMaxThreadCount(8);
 
-    MessageQueue queue(16, 2, 14);
+    MessageQueue queue(256, 32, 224);
 
-    QThreadPool::globalInstance()->start(new MessageQueueWriter(queue));
-    QThreadPool::globalInstance()->start(new MessageQueueWriter(queue));
-    QThreadPool::globalInstance()->start(new MessageQueueWriter(queue));
+    // writer in thread-pool
     QThreadPool::globalInstance()->start(new MessageQueueWriter(queue));
 
+    // writer in std-thread
+    std::shared_ptr<MessageQueueWriter> writer = std::shared_ptr<MessageQueueWriter>(new MessageQueueWriter(queue));
+    std::thread standardWriterThread(&MessageQueueWriter::run, writer);
+    Q_UNUSED(standardWriterThread);
+
+    // reader in thread-pool
     QThreadPool::globalInstance()->start(new MessageQueueReader(queue));
-    QThreadPool::globalInstance()->start(new MessageQueueReader(queue));
-    QThreadPool::globalInstance()->start(new MessageQueueReader(queue));
-    //QThreadPool::globalInstance()->start(new MessageQueueReader(queue));
+
+    // reader in std-thread
+    std::shared_ptr<MessageQueueReader> reader = std::shared_ptr<MessageQueueReader>(new MessageQueueReader(queue));
+    std::thread standardReaderThread(&MessageQueueReader::run, reader);
+    Q_UNUSED(standardReaderThread);
 
     queue.run();
 
@@ -29,6 +37,9 @@ int main(int argc, char *argv[])
     std::cin >> someNoneWhitespaceInput;
 
     queue.stop();
+
+    standardReaderThread.join();
+    standardWriterThread.join();
     QThreadPool::globalInstance()->waitForDone();
 
     return 0;

@@ -38,7 +38,7 @@ void MessageQueueWriter::run()
     qsrand(QTime::currentTime().msecsSinceStartOfDay());
 
     const quint64 threadId = (quint64)QThread::currentThreadId();
-    int priority;
+    int priority = 0;
 
     RetCodes result = this->mQueue.put(generate(threadId, priority), priority);
     while (result != STOPPED) {

@@ -44,7 +44,7 @@ private:
     bool mIsFull;
 
     std::set<IMessageQueueEvents*> mEventHandlers;
-    std::priority_queue<MessageTypeItem> mQueue;
+    std::priority_queue<MessageTypeQueueItem> mQueue;
     QMutex mMutex;
     QWaitCondition mNotEmptyOrStoppedWaitCondition;
 };

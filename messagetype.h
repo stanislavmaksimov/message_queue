@@ -5,21 +5,18 @@
 
 typedef std::string MessageType;
 
-struct MessageTypeItem
+struct MessageTypeQueueItem
 {
     int priority;
     MessageType message;
 
-    MessageTypeItem(const MessageType& message = MessageType(), int priority = 0)
+    MessageTypeQueueItem(const MessageType& message = MessageType(), int priority = 0)
         : priority(priority)
         , message(message) {}
 
-    bool operator <(const MessageTypeItem& other) const
+    bool operator <(const MessageTypeQueueItem& other) const
     {
-        if (priority != other.priority) {
-            return priority < other.priority;
-        }
-        return message < other.message;
+        return priority < other.priority;
     }
 };
 
