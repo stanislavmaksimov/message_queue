@@ -4,6 +4,7 @@
 #include <thread>
 #include <memory>
 #include "messagequeue.h"
+#include "messagequeuestd.h"
 #include "messagequeuereader.h"
 #include "messagequeuewriter.h"
 
@@ -13,7 +14,11 @@ int main(int argc, char *argv[])
 
     QThreadPool::globalInstance()->setMaxThreadCount(8);
 
-    MessageQueue queue(256, 32, 224);
+    // qt-queue
+    //MessageQueue queue(256, 32, 224);
+
+    // std-queue
+    MessageQueueStd queue(256, 32, 224);
 
     // writer in thread-pool
     QThreadPool::globalInstance()->start(new MessageQueueWriter(queue));

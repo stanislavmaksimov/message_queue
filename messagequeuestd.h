@@ -1,22 +1,21 @@
-#ifndef MESSAGEQUEUE_H
-#define MESSAGEQUEUE_H
+#ifndef MESSAGEQUEUESTD_H
+#define MESSAGEQUEUESTD_H
 
 #include <queue>
 #include <set>
+#include <mutex>
+#include <condition_variable>
 #include "imessagequeue.h"
 #include "messagetype.h"
 #include "retcodes.h"
 
-#include <QMutex>
-#include <QWaitCondition>
-
 class IMessageQueueEvents;
 
-class MessageQueue : public IMessageQueue
+class MessageQueueStd : public IMessageQueue
 {
 public:
-    explicit MessageQueue(size_t queue_size, size_t lwm, size_t hwm);
-    virtual ~MessageQueue();
+    explicit MessageQueueStd(size_t queue_size, size_t lwm, size_t hwm);
+    virtual ~MessageQueueStd();
 
     RetCodes put(const MessageType& message, int priority);
     RetCodes get(MessageType& message);
@@ -44,8 +43,8 @@ private:
 
     std::set<IMessageQueueEvents*> mEventHandlers;
     std::priority_queue<MessageTypeQueueItem> mQueue;
-    QMutex mMutex;
-    QWaitCondition mNotEmptyOrStoppedWaitCondition;
+    std::mutex mMutex;
+    std::condition_variable mNotEmptyOrStoppedWaitCondition;
 };
 
-#endif // MESSAGEQUEUE_H
+#endif // MESSAGEQUEUESTD_H

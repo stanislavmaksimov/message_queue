@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     messagetype.cpp \
     messagequeue.cpp \
     messagequeuereader.cpp \
-    messagequeuewriter.cpp
+    messagequeuewriter.cpp \
+    messagequeuestd.cpp
 
 HEADERS += \
     retcodes.h \
@@ -21,5 +22,6 @@ HEADERS += \
     logging.h \
     imessagequeue.h \
     messagequeuereader.h \
-    messagequeuewriter.h
+    messagequeuewriter.h \
+    messagequeuestd.h
 
